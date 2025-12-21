@@ -21,67 +21,7 @@ This project implements a Qiskit-like quantum circuit interface from scratch usi
 
 ## Quick Start
 
-### Basic Circuit Creation
-
-```python
-from qiskit_from_scratch import QuantumCircuit
-
-# Create a 3-qubit circuit
-qc = QuantumCircuit(3, name='MyCircuit')
-
-# Add gates
-qc.h(0)           # Hadamard on qubit 0
-qc.cx(0, 1)       # CNOT with control=0, target=1
-qc.rz(np.pi/4, 2) # Z-rotation on qubit 2
-
-# Get the statevector
-statevector = qc.statevector()
-```
-
-### Using Quantum Registers
-
-```python
-from qiskit_from_scratch import QuantumCircuit, QuantumRegister
-
-# Create quantum registers
-qx = QuantumRegister(2, name='qx')
-qy = QuantumRegister(1, name='qy')
-
-# Create circuit with registers
-qc = QuantumCircuit(qx, qy, name='RegisterCircuit')
-
-# Apply gates using register notation
-qc.h(qx['all'])   # Hadamard on all qubits in qx
-qc.cx(qx[0], qy[0])  # CNOT between registers
-```
-
-### MPS Representation with Compression
-
-```python
-# Create and run circuit with MPS representation
-qc = QuantumCircuit(10, name='LargeCircuit')
-qc.h(list(range(10)))
-
-# Contract using MPS with compression (eps = error tolerance)
-mps = qc.contract(scheme='time', representation='MPS', eps=0.01)
-```
-
-### Computing Expectation Values
-
-```python
-# Create state preparation circuit
-qc = QuantumCircuit(3, name='State')
-qc.h(0)
-qc.cx(0, 1)
-
-# Create operator circuit
-operator = QuantumCircuit(3, name='Observable')
-operator.z(1)  # Z operator on qubit 1
-
-# Convert operator to gate and compute expectation value
-operator_gate = operator.to_gate()
-expectation = qc.expected(operator_gate, representation='MPS', eps=0.1)
-```
+Simply install the package and follow the examples in the [examples](./examples) folder.
 
 ## Supported Gates
 
@@ -138,41 +78,6 @@ Inherits from `TNCircuit` and provides a Qiskit-like interface.
 - `len(qc)`: Returns circuit depth
 - `qc[i]`: Get all tensors at qudit i
 - `print(qc)`: Display circuit diagram
-
-#### `QuantumRegister`
-Manages named collections of qudits.
-
-**Features:**
-- Named qudit access: `reg[0]`, `reg['all']`, `reg[(0,3)]`
-- Integration with `QuantumCircuit`
-
-## Implemented Algorithms
-
-### Deutsch-Jozsa Algorithm
-
-Complete implementation of the Deutsch-Jozsa algorithm for determining whether a function is constant or balanced.
-
-```python
-# Create a balanced oracle
-oracle = QuantumCircuit(3, name='Oracle')
-oracle.cx(1, 2)
-oracle_gate = oracle.to_gate()
-
-# Run Deutsch-Jozsa algorithm
-Deustch_Jozsa_Algorithm(2, oracle_gate, repr='MPS', eps=0.5)
-# Output: Balanced function
-```
-
-## Project Structure
-
-```
-Mini-Qiskit_with_Tensor_Networks/
-│
-├── qiskit_from_scratch.ipynb    # Main implementation and examples
-├── auxiliary_functions.py        # Helper functions for tensor operations
-├── requirements.txt              # Python dependencies
-└── README.md                     # This file
-```
 
 ## How It Works
 

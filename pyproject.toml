@@ -1,0 +1,24 @@
+[project]
+name = "qiskit-from-scratch"
+version = "0.1.0"
+description = "Minimal implementation of Qiskit interfaces from scratch using Tensor Networks"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.10.8",
+    "tensornetwork>=0.4.6",
+    "tntorch>=1.1.2",
+    "torch>=2.9.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.10",
+]
+examples = [
+    "ipykernel>=7.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
