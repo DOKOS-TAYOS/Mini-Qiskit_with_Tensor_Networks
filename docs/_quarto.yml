@@ -1,0 +1,25 @@
+project:
+  type: website
+
+website:
+  title: "Documentation"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: quickstart.qmd
+        text: Quickstart
+      - href: architecture.qmd
+        text: Architecture
+      - href: howitworks.qmd
+        text: How it works
+      - limitations.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+
+

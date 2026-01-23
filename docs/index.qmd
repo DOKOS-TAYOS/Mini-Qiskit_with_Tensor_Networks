@@ -1,0 +1,17 @@
+---
+title: "Overview"
+---
+
+This project implements a Qiskit-like quantum circuit interface from scratch using only tensor networks. It leverages the TensorNetwork library for efficient tensor contractions and provides support for both full statevector and Matrix Product State (MPS) representations.
+
+### Key Features
+
+- **Tensor Network Backend**: All quantum operations are represented and contracted using tensor networks
+- **Qiskit-Compatible API**: Familiar interface for users of Qiskit
+- **Multiple Representations**: Support for both statevector and MPS representations
+- **MPS Compression**: Optional compression with configurable error tolerance for efficient simulation of larger circuits
+- **Quantum Registers**: Support for named quantum registers similar to Qiskit
+- **Visualization**: Circuit visualization using matplotlib
+- **Quantum Algorithms**: Includes implementation of Deutsch-Jozsa algorithm
+
+(See `pyproject.toml` for complete dependency list)

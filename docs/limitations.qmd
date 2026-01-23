@@ -1,0 +1,12 @@
+---
+title: "Limitations"
+---
+
+Some limitations worth mentioning.
+
+- Spatial contraction scheme not implemented
+- Density operator representation not implemented
+- PEPS (Projected Entangled Pair States) representation not implemented
+- No measurement operations (classical registers)
+- No noise models
+- Limited gate set compared to full Qiskit

@@ -1,0 +1,29 @@
+---
+title: "How It Works"
+---
+
+### Tensor Network Representation
+
+Each qubit is represented as a tensor with multiple indices:
+
+- **out**: Physical qubit dimension (connects forward in time)
+- **in**: Connects to previous time step
+- **up/down**: Connects to adjacent qubits (for multi-qubit gates)
+
+Gates are represented as tensors that contract with the state tensors. The circuit evolves by systematically contracting these tensors according to the chosen scheme (time-based) and representation (statevector or MPS).
+
+### Contraction Schemes
+
+**Time-based Contraction**:
+
+- Contracts tensors layer by layer through time
+- Maintains quantum state at each time step
+- Supports both exact (statevector) and approximate (compressed MPS) representations
+
+### MPS Compression
+
+For large circuits, MPS representation with compression provides significant memory savings:
+
+- Uses Tensor Train (TT) decomposition via tntorch
+- Configurable error tolerance (eps parameter)
+- Enables simulation of circuits with more qubits than full statevector methods
