@@ -1,0 +1,25 @@
+---
+title: "Quickstart"
+---
+
+Simply install the package and follow the examples in the [examples](./examples) folder.
+
+## Supported Gates
+
+### Single-Qubit Gates
+- **Pauli Gates**: `x()`, `y()`, `z()`
+- **Hadamard**: `h()`
+- **Rotation Gates**: `rx(angle)`, `ry(angle)`, `rz(angle)`
+
+### Two-Qubit Gates
+- **Controlled-X (CNOT)**: `cx(control, target)`
+- **Controlled-Z**: `cz(control, target)`
+
+### Multi-Qubit Gates
+- **Toffoli (CCX)**: `ccx(control1, control2, target)`
+
+### Custom Gates
+- `append_gate_single()`: Add custom single-qubit gates
+- `append_gate_control()`: Add custom controlled gates
+- `append_gate_multi_control()`: Add custom multi-controlled gates
+- `append_operator()`: Add arbitrary tensor network operators

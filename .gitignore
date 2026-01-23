@@ -1,2 +1,12 @@
 # Cache
 __pycache__
+
+# Virtual envs
+.venv
+
+# Ruff
+.ruff_cache
+
+# Docs
+docs/_site/*
+docs/.quarto

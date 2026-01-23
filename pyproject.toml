@@ -15,6 +15,9 @@ dependencies = [
 dev = [
     "ruff>=0.14.10",
 ]
+documentation = [
+    "quarto>=0.1.0",
+]
 examples = [
     "ipykernel>=7.1.0",
 ]

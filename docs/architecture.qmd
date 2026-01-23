@@ -1,0 +1,43 @@
+---
+title: "Architecture"
+---
+
+### Core Classes
+
+Here you can find highlighted the main classes of the package.
+
+#### `TNCircuit`
+Parent class that manages the tensor network representation of quantum circuits.
+
+**Key Methods:**
+
+- `append_operator(operator, qudits)`: Add operators to the circuit
+- `contract(scheme, representation, eps)`: Contract the tensor network
+  - `scheme`: 'time' (spatial not implemented)
+  - `representation`: 'statevector' or 'MPS'
+  - `eps`: MPS compression error tolerance
+
+**Attributes:**
+
+- `tensors`: 2D list of tensor nodes organized by [time][qudit]
+- `n_qudits`: Number of qudits
+- `dimension_qudits`: Dimension of each qudit (2 for qubits)
+- `depth`: Circuit depth
+
+#### `QuantumCircuit`
+Inherits from `TNCircuit` and provides a Qiskit-like interface.
+
+**Additional Methods:**
+
+- Single and multi-qubit gate methods (h, x, y, z, rx, ry, rz, cx, cz, ccx)
+- `statevector()`: Get the full statevector
+- `expected(operator)`: Compute expectation value
+- `check_state(state)`: Get amplitude of a specific basis state
+- `to_gate()`: Convert circuit to a gate for use in other circuits
+- `draw()`: Visualize the circuit
+
+**Magic Methods:**
+
+- `len(qc)`: Returns circuit depth
+- `qc[i]`: Get all tensors at qudit i
+- `print(qc)`: Display circuit diagram
