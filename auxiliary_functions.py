@@ -3,35 +3,42 @@ import torch
 import tntorch
 import tensornetwork as tn
 
-def TT_State_Compression(TN_State: list, eps: float) -> list:
+def TT_State_Compression(TN_State: list, eps: float, device: torch.device) -> list:
     """
     Compresses a tensor network state into Tensor Train (TT) format with specified precision.
-    
+
     Args:
         TN_State: List of tensornetwork Node objects representing the state
         eps: Relative error tolerance for compression
-        
+        device: Device (e.g. cuda/cpu) for tensor operations
+
     Returns:
         List of tensornetwork Node objects in compressed TT format
     """
-    # Convert to tntorch Tensor format
-    tensor_list = [torch.tensor(node.tensor, dtype=torch.complex128) for node in TN_State]
+    # Convert to tntorch Tensor format on the specified device
+    tensor_list = [
+        torch.as_tensor(node.tensor, dtype=torch.complex128, device=device)
+        for node in TN_State
+    ]
     TT_Compressed = tntorch.Tensor(tensor_list)
-    
+
     # Compress using TT-rounding
     TT_Compressed.round_tt(eps=eps)
-    
-    # Convert back to tensornetwork format
+
+    # Convert back to tensornetwork format (keep as torch tensors, no .numpy())
+    # Ensure complex128: tntorch round_tt can produce float tensors
     TT_cores = []
     for i, core in enumerate(TT_Compressed.cores):
+        core = core.to(torch.complex128) if core.dtype != torch.complex128 else core
         TT_cores.append(
             tn.Node(
-                core.numpy(),
+                core,
                 name=TN_State[i].name,
-                axis_names=TN_State[i].axis_names
+                axis_names=TN_State[i].axis_names,
+                backend="pytorch"
             )
         )
-    
+
     return TT_cores
 
 
@@ -69,9 +76,12 @@ def process_axes(tensor, bond_axes, has_out):
     # Reorder axes if needed
     current_order = list(range(len(tensor.shape)))
     if target_order != current_order:
-        tensor = np.transpose(tensor, target_order)
+        if isinstance(tensor, torch.Tensor):
+            tensor = tensor.permute(target_order)
+        else:
+            tensor = np.transpose(tensor, target_order)
         shape = tensor.shape
-    
+
     # Reshape to group up and down dimensions
     new_shape = []
     if has_out:
@@ -93,8 +103,11 @@ def process_axes(tensor, bond_axes, has_out):
         else:
             new_shape.append(shape[down_idx])
     
-    tensor = np.reshape(tensor, new_shape)
-    
+    if isinstance(tensor, torch.Tensor):
+        tensor = tensor.reshape(tuple(new_shape))
+    else:
+        tensor = np.reshape(tensor, new_shape)
+
     # Determine final axis names
     final_axes = []
     if has_out:
