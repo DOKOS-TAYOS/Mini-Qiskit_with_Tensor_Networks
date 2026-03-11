@@ -1,6 +1,7 @@
 numpy==2.4.3
 matplotlib==3.10.8
 torch==2.10.0
+tensorkrowch==1.1.6
 tensornetwork==0.4.6
 tntorch==1.1.2
 ipykernel==7.2.0
