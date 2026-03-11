@@ -11,6 +11,7 @@ This project implements a Qiskit-like quantum circuit interface from scratch usi
 - **Tensor Network Backend**: All quantum operations are represented and contracted using tensor networks
 - **Qiskit-Compatible API**: Familiar interface for users of Qiskit
 - **Multiple Representations**: Support for both statevector and MPS representations
+- **Two Dense Contraction Schemes**: Statevector contraction can run through time or through space
 - **MPS Compression**: Optional compression with configurable error tolerance for efficient simulation of larger circuits
 - **Quantum Registers**: Support for named quantum registers similar to Qiskit
 - **Visualization**: Circuit visualization using matplotlib
@@ -66,6 +67,13 @@ qc.h(list(range(10)))
 mps = qc.contract(scheme='time', representation='MPS', eps=0.01)
 ```
 
+### Dense Spatial Contraction
+
+```python
+# Dense contraction, folding the network from top to bottom
+space_state = qc.contract(scheme='space', representation='statevector')
+```
+
 ### Computing Expectation Values
 
 ```python
@@ -113,7 +121,7 @@ Parent class that manages the tensor network representation of quantum circuits.
 **Key Methods:**
 - `append_operator(operator, qudits)`: Add operators to the circuit
 - `contract(scheme, representation, eps)`: Contract the tensor network
-  - `scheme`: 'time' (spatial not implemented)
+  - `scheme`: 'time' or 'space' (`'space'` only for dense statevector contractions)
   - `representation`: 'statevector' or 'MPS'
   - `eps`: MPS compression error tolerance
 
@@ -192,6 +200,11 @@ Gates are represented as tensors that contract with the state tensors. The circu
 - Maintains quantum state at each time step
 - Supports both exact (statevector) and approximate (compressed MPS) representations
 
+**Space-based Contraction**:
+- Contracts each qudit row across time first
+- Folds the resulting row tensors from top to bottom
+- Implemented only for the dense statevector representation
+
 ### MPS Compression
 
 For large circuits, MPS representation with compression provides significant memory savings:
@@ -201,7 +214,7 @@ For large circuits, MPS representation with compression provides significant mem
 
 ## Limitations
 
-- Spatial contraction scheme not implemented
+- Spatial contraction is not implemented for MPS
 - Density operator representation not implemented
 - PEPS (Projected Entangled Pair States) representation not implemented
 - No measurement operations (classical registers)

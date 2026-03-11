@@ -189,6 +189,96 @@ def build_basis_bra_layer(
         for bit in bitstring
     ]]
 
+
+def connect_circuit_layers(
+    layers: list[list[tn.Node | None]],
+    *,
+    n_qudits: int,
+) -> list[tn.Edge]:
+    """
+    Wire the circuit grid along time and vertical control bonds.
+
+    Connects each node's "in" axis to the previous available "out" on the same
+    qudit, then connects "down" to the neighbouring node's "up" inside each
+    time slice. Returns the final output edges, one per qudit, so dense
+    contractions can optionally normalize their open-axis order afterwards.
+    """
+    last_layer = [0] * n_qudits
+
+    for time_idx in range(1, len(layers)):
+        for qudit, node in enumerate(layers[time_idx]):
+            if node is None:
+                continue
+
+            previous_node = layers[last_layer[qudit]][qudit]
+            if previous_node is None or "out" not in previous_node.axis_names:
+                raise ValueError(
+                    f"Qudit {qudit} has no output axis available for contraction."
+                )
+            if "in" not in node.axis_names:
+                raise ValueError(
+                    f"Node {node.name!r} at layer {time_idx}, qudit {qudit} is missing an input axis."
+                )
+
+            node["in"] ^ previous_node["out"]
+            last_layer[qudit] = time_idx
+
+            if "down" in node.axis_names:
+                if qudit + 1 >= n_qudits:
+                    raise ValueError(
+                        "Invalid multi-qudit gate layout: missing lower neighbour."
+                    )
+
+                lower_node = layers[time_idx][qudit + 1]
+                if lower_node is None or "up" not in lower_node.axis_names:
+                    raise ValueError(
+                        "Invalid multi-qudit gate layout: missing lower neighbour."
+                    )
+
+                node["down"] ^ lower_node["up"]
+
+    output_edges = []
+    for qudit in range(n_qudits):
+        final_node = layers[last_layer[qudit]][qudit]
+        if final_node is not None and "out" in final_node.axis_names:
+            output_edges.append(final_node["out"])
+    return output_edges
+
+
+def contract_grid_row(
+    row_nodes: list[tn.Node | None],
+    *,
+    name: str,
+) -> tn.Node:
+    """
+    Contract all non-empty nodes in one qudit row of the layered circuit grid.
+
+    Used by the space-based dense contraction, where each row is first reduced
+    across time and the resulting row tensors are then folded from top to
+    bottom.
+    """
+    nodes = [node for node in row_nodes if node is not None]
+    if not nodes:
+        raise ValueError("Cannot contract an empty circuit row.")
+
+    current = nodes[0]
+    for index, node in enumerate(nodes[1:], start=1):
+        current = tn.contract_between(current, node, name=f"{name}^{index}")
+    return current
+
+
+def reorder_dense_output_axes(node: tn.Node, output_edges: list[tn.Edge]) -> tn.Node:
+    """
+    Reorder open physical edges to the notebook's flattened-state convention.
+
+    check_state treats q0 as the least significant qubit, so dense tensors must
+    expose their open "out" axes in reverse physical order before flattening or
+    direct basis-amplitude inspection.
+    """
+    node.reorder_edges(list(reversed(output_edges)))
+    return node
+
+
 def process_axes(
     tensor: torch.Tensor,
     bond_axes: list[str],
