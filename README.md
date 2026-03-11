@@ -35,7 +35,7 @@ qc.cx(0, 1)       # CNOT with control=0, target=1
 qc.rz(np.pi/4, 2) # Z-rotation on qubit 2
 
 # Get the statevector
-statevector = qc.statevector()
+statevector = qc.state_vector()
 ```
 
 ### Using Quantum Registers
@@ -128,7 +128,7 @@ Inherits from `TNCircuit` and provides a Qiskit-like interface.
 
 **Additional Methods:**
 - Single and multi-qubit gate methods (h, x, y, z, rx, ry, rz, cx, cz, ccx)
-- `statevector()`: Get the full statevector
+- `state_vector()`: Get the full statevector
 - `expected(operator)`: Compute expectation value
 - `check_state(state)`: Get amplitude of a specific basis state
 - `to_gate()`: Convert circuit to a gate for use in other circuits
@@ -159,7 +159,7 @@ oracle.cx(1, 2)
 oracle_gate = oracle.to_gate()
 
 # Run Deutsch-Jozsa algorithm
-Deustch_Jozsa_Algorithm(2, oracle_gate, repr='MPS', eps=0.5)
+Deutsch_Jozsa_Algorithm(2, oracle_gate, repr='MPS', eps=0.5)
 # Output: Balanced function
 ```
 
