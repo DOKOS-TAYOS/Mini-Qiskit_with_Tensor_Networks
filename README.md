@@ -2,6 +2,8 @@
 
 A miniature implementation of Qiskit's quantum circuit framework using tensor networks. This project demonstrates how quantum circuits can be represented and simulated efficiently using tensor network methods, providing both educational insight and practical quantum circuit simulation capabilities.
 
+If you want to learn with somo structured notebooks, go to the `notebook` branch.
+
 ## Overview
 
 This project implements a Qiskit-like quantum circuit interface from scratch using only tensor networks. It leverages the TensorNetwork library for efficient tensor contractions and provides support for both full statevector and Matrix Product State (MPS) representations.
@@ -140,4 +142,5 @@ This implementation is inspired by Qiskit and uses the following libraries:
 ## Author
 
 Developed as an educational project to understand quantum circuit simulation using tensor network methods.
+
 
