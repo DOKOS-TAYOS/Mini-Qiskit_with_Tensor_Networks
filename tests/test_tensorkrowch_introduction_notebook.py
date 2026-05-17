@@ -1,10 +1,23 @@
 import json
 import unittest
 from pathlib import Path
-
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK_PATH = ROOT / "tensorkrowch_introduction.ipynb"
+
+
+def executable_python_source(source: str) -> str:
+    return "\n".join(line for line in source.splitlines() if not line.lstrip().startswith("%"))
+
+
+class DummyAxes:
+    def set_title(self, title: str) -> None:
+        return None
+
+
+def show_tensor_network_stub(*args: Any, **kwargs: Any) -> tuple[None, DummyAxes]:
+    return None, DummyAxes()
 
 
 class TensorKrowchIntroductionNotebookTests(unittest.TestCase):
@@ -64,7 +77,8 @@ class TensorKrowchIntroductionNotebookTests(unittest.TestCase):
             source = "".join(cell.get("source", []))
             if not source.strip():
                 continue
-            exec(source, namespace)
+            exec(executable_python_source(source), namespace)
+            namespace["show_tensor_network"] = show_tensor_network_stub
 
         expected_symbols = {
             "normalized_tensor",

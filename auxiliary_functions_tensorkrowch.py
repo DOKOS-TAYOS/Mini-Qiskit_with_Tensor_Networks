@@ -13,7 +13,6 @@ import copy
 import tensorkrowch as tk
 import torch
 
-
 CANONICAL_MPS_AXES = ("up", "out", "down")
 
 
@@ -63,7 +62,7 @@ def set_axis_names(node: tk.Node, axis_names: list[str] | tuple[str, ...]) -> tk
             f"Axis-name count mismatch: node has {len(node.axes)} axes but "
             f"{len(axis_names)} names were provided."
         )
-    for axis, axis_name in zip(node.axes, axis_names):
+    for axis, axis_name in zip(node.axes, axis_names, strict=True):
         axis.name = axis_name
     return node
 
@@ -133,9 +132,7 @@ def contract_between(
         result = tk.contract_between(node1, node2)
     else:
         if not allow_outer_product:
-            raise ValueError(
-                f"No shared edges between nodes {node1.name!r} and {node2.name!r}."
-            )
+            raise ValueError(f"No shared edges between nodes {node1.name!r} and {node2.name!r}.")
         if node1.network is not node2.network:
             node2.move_to_network(node1.network)
         result = tk.tprod(node1, node2)
@@ -188,16 +185,18 @@ def build_basis_bra_layer(
 ) -> list[list[tk.Node]]:
     zero = torch.tensor([1, 0], dtype=dtype, device=device)
     one = torch.tensor([0, 1], dtype=dtype, device=device)
-    return [[
-        _make_node(
-            zero.clone() if bit == "0" else one.clone(),
-            name=f"<{bit}|",
-            axis_names=["in"],
-            device=device,
-            dtype=dtype,
-        )
-        for bit in bitstring
-    ]]
+    return [
+        [
+            _make_node(
+                zero.clone() if bit == "0" else one.clone(),
+                name=f"<{bit}|",
+                axis_names=["in"],
+                device=device,
+                dtype=dtype,
+            )
+            for bit in bitstring
+        ]
+    ]
 
 
 def connect_circuit_layers(
@@ -214,9 +213,7 @@ def connect_circuit_layers(
 
             previous_node = layers[last_layer[qudit]][qudit]
             if previous_node is None or "out" not in previous_node.axes_names:
-                raise ValueError(
-                    f"Qudit {qudit} has no output axis available for contraction."
-                )
+                raise ValueError(f"Qudit {qudit} has no output axis available for contraction.")
             if "in" not in node.axes_names:
                 raise ValueError(
                     f"Node {node.name!r} at layer {time_idx}, qudit {qudit} is missing an input axis."
@@ -227,15 +224,11 @@ def connect_circuit_layers(
 
             if "down" in node.axes_names:
                 if qudit + 1 >= n_qudits:
-                    raise ValueError(
-                        "Invalid multi-qudit gate layout: missing lower neighbour."
-                    )
+                    raise ValueError("Invalid multi-qudit gate layout: missing lower neighbour.")
 
                 lower_node = layers[time_idx][qudit + 1]
                 if lower_node is None or "up" not in lower_node.axes_names:
-                    raise ValueError(
-                        "Invalid multi-qudit gate layout: missing lower neighbour."
-                    )
+                    raise ValueError("Invalid multi-qudit gate layout: missing lower neighbour.")
 
                 connect_edges(node["down"], lower_node["up"])
 
@@ -271,11 +264,11 @@ def reorder_dense_output_axes(node: tk.Node, output_edges) -> tk.Node:
         try:
             current_indices.append(node.edges.index(edge))
         except ValueError as exc:
-            raise ValueError("Could not locate a final output edge on the contracted node.") from exc
+            raise ValueError(
+                "Could not locate a final output edge on the contracted node."
+            ) from exc
 
-    remaining_indices = [
-        index for index in range(len(node.edges)) if index not in current_indices
-    ]
+    remaining_indices = [index for index in range(len(node.edges)) if index not in current_indices]
     target_order = current_indices + remaining_indices
     if target_order == list(range(len(node.edges))):
         return node
@@ -359,9 +352,7 @@ def canonicalize_mps_node(node: tk.Node, *, name: str | None = None) -> tk.Node:
     if permutation != list(range(len(present_axes))):
         tensor = tensor.permute(permutation)
 
-    shape_by_axis = {
-        axis_name: tensor.shape[index] for index, axis_name in enumerate(present_axes)
-    }
+    shape_by_axis = {axis_name: tensor.shape[index] for index, axis_name in enumerate(present_axes)}
     canonical_shape = tuple(shape_by_axis.get(axis_name, 1) for axis_name in CANONICAL_MPS_AXES)
     tensor = tensor.reshape(canonical_shape)
 

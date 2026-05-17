@@ -5,7 +5,6 @@ import types
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK_PATH = ROOT / "qiskit_from_scratch.ipynb"
 DEFINITION_CELLS = (3, 5, 7, 9, 11, 13, 15)
@@ -53,20 +52,22 @@ class SpaceContractionTests(unittest.TestCase):
 
         result = qc.contract(scheme="space", representation="statevector", eps=0)
 
-        for state in range(2 ** qc.n_qudits):
+        for state in range(2**qc.n_qudits):
             amplitude = dense_amplitude(result.tensor, state, qc.n_qudits)
             self.assertAlmostEqual(amplitude.real, qc.check_state(state).real)
             self.assertAlmostEqual(amplitude.imag, qc.check_state(state).imag)
 
     def assert_space_matches_check_state(self, qc):
         result = qc.contract(scheme="space", representation="statevector", eps=0)
-        for state in range(2 ** qc.n_qudits):
+        for state in range(2**qc.n_qudits):
             amplitude = dense_amplitude(result.tensor, state, qc.n_qudits)
             expected = qc.check_state(state)
             self.assertAlmostEqual(amplitude.real, expected.real)
             self.assertAlmostEqual(amplitude.imag, expected.imag)
 
-    def test_space_statevector_matches_basis_amplitudes_for_single_qubit_gates_on_different_rows(self):
+    def test_space_statevector_matches_basis_amplitudes_for_single_qubit_gates_on_different_rows(
+        self,
+    ):
         for qudit in range(3):
             with self.subTest(qudit=qudit):
                 qc = self.QuantumCircuit(3)

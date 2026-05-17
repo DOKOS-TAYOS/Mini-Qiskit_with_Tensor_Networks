@@ -13,9 +13,8 @@ All tensors use PyTorch as the backend for GPU support and complex arithmetic.
 """
 
 import tensornetwork as tn
-import torch
 import tntorch
-
+import torch
 
 # Canonical axis order for MPS/TT cores: left bond, physical index, right bond.
 # This order is required by tntorch for TT compression and keeps contraction paths consistent.
@@ -66,8 +65,7 @@ def copy_node_grid(node_grid: list[list[tn.Node | None]]) -> list[list[tn.Node |
     copied_nodes = tn.replicate_nodes(flat_nodes)
     copied_iter = iter(copied_nodes)
     return [
-        [next(copied_iter) if node is not None else None for node in layer]
-        for layer in node_grid
+        [next(copied_iter) if node is not None else None for node in layer] for layer in node_grid
     ]
 
 
@@ -179,15 +177,17 @@ def build_basis_bra_layer(
     """
     zero = torch.tensor([1, 0], dtype=dtype, device=device)
     one = torch.tensor([0, 1], dtype=dtype, device=device)
-    return [[
-        tn.Node(
-            zero.clone() if bit == "0" else one.clone(),
-            name=f"<{bit}|",
-            axis_names=["in"],
-            backend="pytorch",
-        )
-        for bit in bitstring
-    ]]
+    return [
+        [
+            tn.Node(
+                zero.clone() if bit == "0" else one.clone(),
+                name=f"<{bit}|",
+                axis_names=["in"],
+                backend="pytorch",
+            )
+            for bit in bitstring
+        ]
+    ]
 
 
 def connect_circuit_layers(
@@ -212,9 +212,7 @@ def connect_circuit_layers(
 
             previous_node = layers[last_layer[qudit]][qudit]
             if previous_node is None or "out" not in previous_node.axis_names:
-                raise ValueError(
-                    f"Qudit {qudit} has no output axis available for contraction."
-                )
+                raise ValueError(f"Qudit {qudit} has no output axis available for contraction.")
             if "in" not in node.axis_names:
                 raise ValueError(
                     f"Node {node.name!r} at layer {time_idx}, qudit {qudit} is missing an input axis."
@@ -225,15 +223,11 @@ def connect_circuit_layers(
 
             if "down" in node.axis_names:
                 if qudit + 1 >= n_qudits:
-                    raise ValueError(
-                        "Invalid multi-qudit gate layout: missing lower neighbour."
-                    )
+                    raise ValueError("Invalid multi-qudit gate layout: missing lower neighbour.")
 
                 lower_node = layers[time_idx][qudit + 1]
                 if lower_node is None or "up" not in lower_node.axis_names:
-                    raise ValueError(
-                        "Invalid multi-qudit gate layout: missing lower neighbour."
-                    )
+                    raise ValueError("Invalid multi-qudit gate layout: missing lower neighbour.")
 
                 node["down"] ^ lower_node["up"]
 
@@ -304,14 +298,14 @@ def process_axes(
     target_order = []
     if has_out:
         target_order.append(0)
-    
+
     up_axes = []
     if has_up1:
         up_axes.append(axis_map["up1"] + out_offset)
     if has_up2:
         up_axes.append(axis_map["up2"] + out_offset)
     target_order.extend(up_axes)
-    
+
     down_axes = []
     if has_down1:
         down_axes.append(axis_map["down1"] + out_offset)
@@ -373,9 +367,7 @@ def canonicalize_mps_node(node: tn.Node, *, name: str | None = None) -> tn.Node:
     if permutation != list(range(len(present_axes))):
         tensor = tensor.permute(permutation)
 
-    shape_by_axis = {
-        axis_name: tensor.shape[index] for index, axis_name in enumerate(present_axes)
-    }
+    shape_by_axis = {axis_name: tensor.shape[index] for index, axis_name in enumerate(present_axes)}
     canonical_shape = tuple(shape_by_axis.get(axis_name, 1) for axis_name in CANONICAL_MPS_AXES)
     tensor = tensor.reshape(canonical_shape)
 
@@ -413,8 +405,7 @@ def TT_State_Compression(
     """
     canonical_nodes = canonicalize_mps_grid(tn_state)
     tensor_list = [
-        ensure_torch_tensor(node.tensor, dtype=dtype, device=device)
-        for node in canonical_nodes
+        ensure_torch_tensor(node.tensor, dtype=dtype, device=device) for node in canonical_nodes
     ]
     tt_compressed = tntorch.Tensor(tensor_list)
     tt_compressed.round_tt(eps=eps)

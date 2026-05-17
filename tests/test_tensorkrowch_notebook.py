@@ -5,7 +5,6 @@ from pathlib import Path
 import numpy as np
 import torch
 
-
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK_PATH = ROOT / "qiskit_from_scratch_tensorkrowch.ipynb"
 DEFINITION_CELLS = (3, 5, 7, 9, 11, 13, 15)
@@ -77,7 +76,7 @@ class TensorKrowchNotebookTests(unittest.TestCase):
         qc.ccx(0, 3, 1)
 
         result = qc.contract(scheme="space", representation="statevector", eps=0)
-        for state in range(2 ** qc.n_qudits):
+        for state in range(2**qc.n_qudits):
             amplitude = dense_amplitude(result.tensor, state)
             expected = qc.check_state(state)
             self.assertAlmostEqual(amplitude.real, expected.real)
@@ -91,9 +90,7 @@ class TensorKrowchNotebookTests(unittest.TestCase):
         qc.ccx(0, 2, 1)
 
         mps_result = qc.contract(representation="mps", eps=0)
-        mps_dense = (
-            self.mps_nodes_to_dense_tensor(mps_result).reshape(-1).detach().cpu().numpy()
-        )
+        mps_dense = self.mps_nodes_to_dense_tensor(mps_result).reshape(-1).detach().cpu().numpy()
         expected_dense = qc.state_vector()
 
         self.assertEqual(len(mps_result), qc.n_qudits)
@@ -108,9 +105,7 @@ class TensorKrowchNotebookTests(unittest.TestCase):
         qc.rz(0.25, 4)
 
         approx_mps = qc.contract(representation="mps", eps=1e-6)
-        approx_dense = (
-            self.mps_nodes_to_dense_tensor(approx_mps).reshape(-1).detach().cpu().numpy()
-        )
+        approx_dense = self.mps_nodes_to_dense_tensor(approx_mps).reshape(-1).detach().cpu().numpy()
         exact_dense = qc.state_vector()
 
         self.assertEqual(approx_dense.shape, exact_dense.shape)
