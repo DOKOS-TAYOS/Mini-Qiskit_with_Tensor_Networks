@@ -402,10 +402,16 @@ def TT_State_Compression(
     Uses tntorch.round_tt to perform SVD-based truncation. Larger eps yields
     smaller bond dimensions and faster contractions at the cost of accuracy.
     Returns a new list of MPS nodes with reduced bond dimensions.
+
+    tntorch can create internal tensors on CPU even when the inputs are on
+    CUDA, so compression runs on CPU and the resulting cores are moved back to
+    the requested device.
     """
     canonical_nodes = canonicalize_mps_grid(tn_state)
+    compression_device = torch.device("cpu") if device.type == "cuda" else device
     tensor_list = [
-        ensure_torch_tensor(node.tensor, dtype=dtype, device=device) for node in canonical_nodes
+        ensure_torch_tensor(node.tensor, dtype=dtype, device=compression_device)
+        for node in canonical_nodes
     ]
     tt_compressed = tntorch.Tensor(tensor_list)
     tt_compressed.round_tt(eps=eps)
