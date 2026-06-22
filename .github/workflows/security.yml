@@ -2,8 +2,11 @@ name: Security
 
 on:
   pull_request:
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
   schedule:
-    - cron: "45 6 * * 1"
+    - cron: "45 6 * * 5"
   workflow_dispatch:
 
 permissions:
