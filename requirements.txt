@@ -1,10 +1,10 @@
 --extra-index-url https://download.pytorch.org/whl/cu126
-numpy==2.4.5
-matplotlib==3.10.9
+numpy==2.5.1
+matplotlib==3.11.1
 torch==2.13.0+cu126
 tensorkrowch==1.1.6
 tensornetwork==0.4.6
 tntorch==1.1.2
-ipykernel==7.2.0
+ipykernel==7.3.0
 ipympl>=0.10.0
 tensor-network-visualization==2.0.3
