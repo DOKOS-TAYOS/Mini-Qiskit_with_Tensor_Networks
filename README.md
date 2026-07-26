@@ -28,12 +28,12 @@ This project implements a Qiskit-like quantum circuit interface from scratch usi
 from qiskit_from_scratch import QuantumCircuit
 
 # Create a 3-qubit circuit
-qc = QuantumCircuit(3, name='MyCircuit')
+qc = QuantumCircuit(3, name="MyCircuit")
 
 # Add gates
-qc.h(0)           # Hadamard on qubit 0
-qc.cx(0, 1)       # CNOT with control=0, target=1
-qc.rz(np.pi/4, 2) # Z-rotation on qubit 2
+qc.h(0)  # Hadamard on qubit 0
+qc.cx(0, 1)  # CNOT with control=0, target=1
+qc.rz(np.pi / 4, 2)  # Z-rotation on qubit 2
 
 # Get the statevector
 statevector = qc.state_vector()
@@ -45,14 +45,14 @@ statevector = qc.state_vector()
 from qiskit_from_scratch import QuantumCircuit, QuantumRegister
 
 # Create quantum registers
-qx = QuantumRegister(2, name='qx')
-qy = QuantumRegister(1, name='qy')
+qx = QuantumRegister(2, name="qx")
+qy = QuantumRegister(1, name="qy")
 
 # Create circuit with registers
-qc = QuantumCircuit(qx, qy, name='RegisterCircuit')
+qc = QuantumCircuit(qx, qy, name="RegisterCircuit")
 
 # Apply gates using register notation
-qc.h(qx['all'])   # Hadamard on all qubits in qx
+qc.h(qx["all"])  # Hadamard on all qubits in qx
 qc.cx(qx[0], qy[0])  # CNOT between registers
 ```
 
@@ -60,35 +60,35 @@ qc.cx(qx[0], qy[0])  # CNOT between registers
 
 ```python
 # Create and run circuit with MPS representation
-qc = QuantumCircuit(10, name='LargeCircuit')
+qc = QuantumCircuit(10, name="LargeCircuit")
 qc.h(list(range(10)))
 
 # Contract using MPS with compression (eps = error tolerance)
-mps = qc.contract(scheme='time', representation='MPS', eps=0.01)
+mps = qc.contract(scheme="time", representation="MPS", eps=0.01)
 ```
 
 ### Dense Spatial Contraction
 
 ```python
 # Dense contraction, folding the network from top to bottom
-space_state = qc.contract(scheme='space', representation='statevector')
+space_state = qc.contract(scheme="space", representation="statevector")
 ```
 
 ### Computing Expectation Values
 
 ```python
 # Create state preparation circuit
-qc = QuantumCircuit(3, name='State')
+qc = QuantumCircuit(3, name="State")
 qc.h(0)
 qc.cx(0, 1)
 
 # Create operator circuit
-operator = QuantumCircuit(3, name='Observable')
+operator = QuantumCircuit(3, name="Observable")
 operator.z(1)  # Z operator on qubit 1
 
 # Convert operator to gate and compute expectation value
 operator_gate = operator.to_gate()
-expectation = qc.expected(operator_gate, representation='MPS', eps=0.1)
+expectation = qc.expected(operator_gate, representation="MPS", eps=0.1)
 ```
 
 ## Supported Gates
@@ -162,12 +162,12 @@ Complete implementation of the Deutsch-Jozsa algorithm for determining whether a
 
 ```python
 # Create a balanced oracle
-oracle = QuantumCircuit(3, name='Oracle')
+oracle = QuantumCircuit(3, name="Oracle")
 oracle.cx(1, 2)
 oracle_gate = oracle.to_gate()
 
 # Run Deutsch-Jozsa algorithm
-Deutsch_Jozsa_Algorithm(2, oracle_gate, repr='MPS', eps=0.5)
+Deutsch_Jozsa_Algorithm(2, oracle_gate, repr="MPS", eps=0.5)
 # Output: Balanced function
 ```
 
