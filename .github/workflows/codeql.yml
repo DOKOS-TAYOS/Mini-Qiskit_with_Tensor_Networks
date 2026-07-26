@@ -9,6 +9,7 @@ on:
     branches:
       - main
       - master
+      - notebook
     paths-ignore:
       - "**/*.md"
       - "docs/**"
