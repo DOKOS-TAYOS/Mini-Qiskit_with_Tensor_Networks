@@ -234,12 +234,17 @@ Potential areas for extension:
 
 ## License
 
-This project is for educational purposes, demonstrating the connection between quantum circuits and tensor networks.
+This project is licensed under the [MIT License](LICENSE).
+
+This project is an independent educational work and is not affiliated with, endorsed by, or sponsored by IBM or the Qiskit project.
+
+Third-party dependency notices are listed in [NOTICE](NOTICE).
 
 ## Acknowledgments
 
 This implementation is inspired by Qiskit and uses the following libraries:
 - TensorNetwork library for tensor operations
+- tensorkrowch for tensor-network layers
 - tntorch for MPS compression
 - PyTorch for tensor backend
 - NumPy for numerical operations

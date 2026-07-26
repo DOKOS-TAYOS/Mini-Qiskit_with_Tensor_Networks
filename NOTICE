@@ -1,0 +1,21 @@
+Third-Party Notices
+===================
+
+This project depends on the following third-party libraries. Their licenses
+remain those of their respective copyright holders.
+
+TensorNetwork
+  https://github.com/google/TensorNetwork
+  License: Apache License 2.0 (Apache-2.0)
+
+tensorkrowch
+  https://github.com/joserapa98/tensorkrowch
+  License: MIT License (MIT)
+
+tntorch
+  https://github.com/rballester/tntorch
+  License: GNU Lesser General Public License v3.0 (LGPL-3.0)
+
+torch (PyTorch)
+  https://github.com/pytorch/pytorch
+  License: BSD-style license (see the PyTorch LICENSE file)
