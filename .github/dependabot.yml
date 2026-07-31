@@ -4,50 +4,25 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "05:00"
+      day: "tuesday"
+      time: "02:45"
       timezone: "Europe/Madrid"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
     commit-message:
       prefix: "deps"
       include: "scope"
-    groups:
-      python-dependencies:
-        applies-to: version-updates
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-      security-updates:
-        applies-to: security-updates
-        patterns:
-          - "*"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "05:30"
+      day: "tuesday"
+      time: "02:45"
       timezone: "Europe/Madrid"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
     commit-message:
       prefix: "deps"
       include: "scope"
-    groups:
-      github-actions:
-        applies-to: version-updates
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-      security-updates:
-        applies-to: security-updates
-        patterns:
-          - "*"
