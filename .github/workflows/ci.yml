@@ -2,9 +2,8 @@ name: CI
 
 on:
   pull_request:
-    paths-ignore:
-      # Keep README.md in scope: ruff format checks fenced examples there.
-      - "docs/**"
+    branches:
+      - notebook
   push:
     branches:
       - main
@@ -61,3 +60,19 @@ jobs:
 
       - name: Run tests
         run: python -m pytest -q
+
+  required-pr-ci:
+    name: required-pr-ci
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verify essential jobs
+        env:
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          if [ "$TEST_RESULT" != "success" ]; then
+            echo "Essential CI did not succeed: $TEST_RESULT"
+            exit 1
+          fi
