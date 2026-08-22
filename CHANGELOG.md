@@ -1,5 +1,10 @@
 # Changelog
 
+## Frozen (2026-08-22)
+
+- Marked the repository as frozen and unmaintained while keeping it available as an educational reference.
+- Removed Dependabot and GitHub Actions workflows; no routine automation, dependency updates, or security fixes are planned.
+
 ## Unreleased
 
 - Added Dependabot configuration for Python dependencies and GitHub Actions.
