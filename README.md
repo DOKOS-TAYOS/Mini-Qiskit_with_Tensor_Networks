@@ -1,5 +1,11 @@
 # Mini-Qiskit with Tensor Networks
 
+> **Project status: FROZEN / UNMAINTAINED**
+>
+> This repository is retained as an educational reference. It is no longer actively
+> maintained: no feature work, dependency updates, routine CI, or security fixes are
+> planned. Issues and pull requests may not receive a response.
+
 A miniature implementation of Qiskit's quantum circuit framework using tensor networks. This project demonstrates how quantum circuits can be represented and simulated efficiently using tensor network methods, providing both educational insight and practical quantum circuit simulation capabilities.
 
 ## Overview
